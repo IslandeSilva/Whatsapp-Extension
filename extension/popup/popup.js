@@ -15,6 +15,10 @@ function loadProfileInfo() {
       chrome.tabs.query({ url: 'https://web.whatsapp.com/*' }, (tabs) => {
         if (tabs.length > 0) {
           chrome.tabs.sendMessage(tabs[0].id, { action: 'get-profile' }, (response) => {
+            if (chrome.runtime.lastError) {
+              console.warn('Could not get profile:', chrome.runtime.lastError);
+              return;
+            }
             if (response && response.profile) {
               updateProfileDisplay(response.profile);
             }
@@ -44,6 +48,10 @@ function loadKanbanStats() {
       chrome.tabs.query({ url: 'https://web.whatsapp.com/*' }, (tabs) => {
         if (tabs.length > 0) {
           chrome.tabs.sendMessage(tabs[0].id, { action: 'get-kanban' }, (response) => {
+            if (chrome.runtime.lastError) {
+              console.warn('Could not get kanban data:', chrome.runtime.lastError);
+              return;
+            }
             if (response && response.kanban) {
               updateKanbanDisplay(response.kanban);
             }
@@ -73,6 +81,9 @@ function setupEventListeners() {
         
         // Send message to open kanban modal
         chrome.tabs.sendMessage(tabs[0].id, { action: 'open-kanban' }, () => {
+          if (chrome.runtime.lastError) {
+            console.warn('Could not send message:', chrome.runtime.lastError);
+          }
           // Close popup after sending message
           window.close();
         });

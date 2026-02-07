@@ -227,19 +227,21 @@ class KanbanManager {
       if (!chatList) return;
 
       Object.entries(kanban).forEach(([phone, chat]) => {
-        // Find chat element in WhatsApp (this is a simplified approach)
-        // In production, you'd need more robust phone number matching
+        // Find chat element in WhatsApp
+        // Note: Matching by name is a simplified approach with limitations.
+        // In production, this should use WhatsApp's internal Store/React data
+        // to match by phone number for 100% accuracy.
         const chatElements = document.querySelectorAll('[data-testid="cell-frame-container"]');
         
         chatElements.forEach(el => {
-          // Try to match phone number (simplified)
+          // Try to match phone number (simplified - matches by name)
           const titleElement = el.querySelector('[dir="auto"]');
           if (titleElement && titleElement.textContent.includes(chat.name)) {
             // Remove old indicator
             const oldIndicator = el.querySelector('.wem-status-indicator');
             if (oldIndicator) oldIndicator.remove();
 
-            // Add new indicator
+            // Add status indicator
             const indicator = document.createElement('span');
             indicator.className = 'wem-status-indicator';
             indicator.textContent = chat.color;
@@ -261,12 +263,11 @@ class KanbanManager {
       const nameEl = el.querySelector('[dir="auto"]');
       const name = nameEl?.textContent?.replace(/[🟢🟡🔴✅⏸️]/g, '').trim() || 'Desconhecido';
       
-      // Simple phone extraction - in production, use WhatsApp's internal data
-      // For now, use name as a fallback identifier
-      const phone = this.extractPhoneFromElement(el) || `unknown_${Date.now()}`;
+      // Extract phone from element (or use name as fallback)
+      const phone = this.extractPhoneFromElement(el);
       
-      // Only add if not already in kanban
-      if (!kanban[phone] && phone !== `unknown_${Date.now()}`) {
+      // Only add if we have a valid phone and it's not already in kanban
+      if (phone && !kanban[phone]) {
         this.addChat(phone, name);
       }
     });

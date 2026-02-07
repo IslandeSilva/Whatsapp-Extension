@@ -13,7 +13,7 @@ Extensão Chrome para gerenciar atendimentos no WhatsApp Web com sistema Kanban 
   - ✅ **Resolvido**: Atendimentos concluídos
 - **Drag & Drop**: Arraste cards entre colunas para atualizar status
 - **Indicadores Visuais**: Bolinhas coloridas aparecem diretamente nos chats do WhatsApp
-- **Auto-detecção**: Novos chats são adicionados automaticamente ao Kanban
+- **Adição Manual**: Adicione chats ao Kanban conforme necessário (auto-detecção em desenvolvimento)
 
 ### 👤 Perfil Personalizado
 - 🏷️ **Mensagens Identificadas**: Cada atendente tem seu nome nas mensagens

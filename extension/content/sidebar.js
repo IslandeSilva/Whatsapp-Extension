@@ -355,14 +355,3 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   return true;
 });
 
-// Sync localStorage to chrome.storage periodically (for popup access)
-setInterval(() => {
-  const profile = storageManager.getProfile();
-  const kanban = storageManager.getKanban();
-  
-  chrome.storage.local.set({
-    wem_user_profile: profile,
-    wem_kanban: kanban
-  });
-}, 5000); // Sync every 5 seconds
-

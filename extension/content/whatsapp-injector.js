@@ -72,8 +72,8 @@ class WhatsAppInjector {
     // Check if signature already exists
     if (currentText.includes(signature)) return;
 
-    // Prepend signature to message
-    const newText = signature + ' ' + currentText;
+    // Append signature to message (at the end)
+    const newText = currentText + '\n' + signature;
     
     // Update the message box
     messageElement.textContent = newText;
