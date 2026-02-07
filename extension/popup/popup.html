@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp Extension Manager</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <div class="popup-header">
+      <h1>💬 WhatsApp Manager</h1>
+      <p class="version">v1.0.0</p>
+    </div>
+    
+    <div class="popup-content">
+      <div class="info-card">
+        <div class="icon">✅</div>
+        <div class="text">
+          <h3>Extensão Ativa</h3>
+          <p>Abra o WhatsApp Web para usar</p>
+        </div>
+      </div>
+      
+      <div class="quick-stats">
+        <div class="stat">
+          <span class="stat-value" id="message-count">0</span>
+          <span class="stat-label">Mensagens</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="config-status">❌</span>
+          <span class="stat-label">Configuração</span>
+        </div>
+      </div>
+      
+      <div class="actions">
+        <button class="btn-primary" id="open-whatsapp">
+          Abrir WhatsApp Web
+        </button>
+        
+        <button class="btn-secondary" id="view-help">
+          📖 Como Usar
+        </button>
+      </div>
+      
+      <div class="help-section" id="help-section" style="display: none;">
+        <h4>Como Usar:</h4>
+        <ol>
+          <li>Abra o WhatsApp Web</li>
+          <li>Clique no ícone 💬 no lado esquerdo</li>
+          <li>Configure seu nome em "Config"</li>
+          <li>Envie mensagens identificadas!</li>
+        </ol>
+      </div>
+    </div>
+    
+    <div class="popup-footer">
+      <a href="https://github.com/IslandeSilva/Whatsapp-Extension" target="_blank">
+        GitHub
+      </a>
+      <span>|</span>
+      <a href="#" id="export-data">Exportar Dados</a>
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
