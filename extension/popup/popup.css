@@ -1,0 +1,189 @@
+/* WhatsApp Extension Manager - Popup Styles */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  width: 320px;
+  background: #f0f2f5;
+}
+
+.popup-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+}
+
+/* Header */
+.popup-header {
+  background: linear-gradient(135deg, #128C7E 0%, #075E54 100%);
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+.popup-header h1 {
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+
+.version {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+/* Content */
+.popup-content {
+  padding: 20px;
+  flex: 1;
+}
+
+/* Info Card */
+.info-card {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.info-card .icon {
+  font-size: 32px;
+  margin-right: 15px;
+}
+
+.info-card .text h3 {
+  font-size: 15px;
+  color: #075E54;
+  margin-bottom: 4px;
+}
+
+.info-card .text p {
+  font-size: 12px;
+  color: #667781;
+}
+
+/* Quick Stats */
+.quick-stats {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.stat {
+  flex: 1;
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stat-value {
+  display: block;
+  font-size: 24px;
+  font-weight: 600;
+  color: #128C7E;
+  margin-bottom: 5px;
+}
+
+.stat-label {
+  display: block;
+  font-size: 11px;
+  color: #667781;
+  text-transform: uppercase;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+button {
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #128C7E 0%, #075E54 100%);
+  color: white;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(18, 140, 126, 0.4);
+}
+
+.btn-secondary {
+  background: white;
+  color: #3b4a54;
+  border: 1px solid #ddd;
+}
+
+.btn-secondary:hover {
+  background: #f0f2f5;
+}
+
+/* Help Section */
+.help-section {
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  margin-top: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.help-section h4 {
+  color: #075E54;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.help-section ol {
+  padding-left: 20px;
+}
+
+.help-section li {
+  color: #3b4a54;
+  font-size: 13px;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+/* Footer */
+.popup-footer {
+  background: white;
+  padding: 12px;
+  text-align: center;
+  border-top: 1px solid #e9edef;
+  font-size: 12px;
+}
+
+.popup-footer a {
+  color: #128C7E;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.popup-footer a:hover {
+  text-decoration: underline;
+}
+
+.popup-footer span {
+  margin: 0 8px;
+  color: #ccc;
+}
