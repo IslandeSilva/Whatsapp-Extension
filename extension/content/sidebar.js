@@ -185,7 +185,7 @@ class SidebarManager {
           <div class="wem-settings-section">
             <h3>ℹ️ Sobre</h3>
             <p><strong>WhatsApp Extension Manager</strong></p>
-            <p>Versão: 1.0.0</p>
+            <p>Versão: 1.1.0</p>
             <p>Sistema de gestão de atendimentos com Kanban</p>
           </div>
         </div>
