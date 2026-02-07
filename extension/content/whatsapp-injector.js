@@ -141,6 +141,7 @@ class WhatsAppInjector {
     } catch (error) {
       console.error('[WEM] Error during injection:', error);
     }
+  }
 
   formatSignature(profile) {
     const format = profile.messageFormat || '*{name}:*';
