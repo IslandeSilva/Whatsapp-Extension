@@ -259,7 +259,7 @@ class KanbanManager {
           }
         });
       });
-    }, 100);
+    }, 300); // Increased from 100ms to 300ms for better performance
   }
 
   // Auto-detect new chats from WhatsApp (improved version)
@@ -287,14 +287,13 @@ class KanbanManager {
 
   // Generate a unique identifier from name (fallback when phone not available)
   generatePhoneFromName(name) {
-    // Create a hash-like ID from the name
+    // Create a hash-like ID from the name with timestamp to ensure uniqueness
     let hash = 0;
     for (let i = 0; i < name.length; i++) {
       const char = name.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
-      hash = hash & hash;
     }
-    return 'chat_' + Math.abs(hash);
+    return 'chat_' + Math.abs(hash) + '_' + Date.now();
   }
 
   // Extract phone number from chat element (helper - simplified)
