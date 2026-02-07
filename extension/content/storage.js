@@ -33,6 +33,8 @@ class StorageManager {
 
   saveProfile(profile) {
     localStorage.setItem(this.KEYS.PROFILE, JSON.stringify(profile));
+    // Sync to chrome.storage immediately
+    this.syncToChromeStorage();
   }
 
   // Kanban Management
@@ -43,6 +45,18 @@ class StorageManager {
 
   saveKanban(kanban) {
     localStorage.setItem(this.KEYS.KANBAN, JSON.stringify(kanban));
+    // Sync to chrome.storage immediately
+    this.syncToChromeStorage();
+  }
+
+  // Sync localStorage to chrome.storage (for popup access)
+  syncToChromeStorage() {
+    if (typeof chrome !== 'undefined' && chrome.storage) {
+      chrome.storage.local.set({
+        wem_user_profile: this.getProfile(),
+        wem_kanban: this.getKanban()
+      });
+    }
   }
 
   // Clear all data (for settings reset)

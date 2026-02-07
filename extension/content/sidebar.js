@@ -339,3 +339,30 @@ class SidebarManager {
 
 // Initialize Sidebar
 const sidebarManager = new SidebarManager();
+
+// Listen for messages from popup or background
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === 'open-kanban') {
+    sidebarManager.openModal('wem-kanban-modal');
+    kanbanManager.renderCards();
+    kanbanManager.setupDragAndDrop();
+    sendResponse({ success: true });
+  } else if (request.action === 'get-profile') {
+    sendResponse({ profile: storageManager.getProfile() });
+  } else if (request.action === 'get-kanban') {
+    sendResponse({ kanban: storageManager.getKanban() });
+  }
+  return true;
+});
+
+// Sync localStorage to chrome.storage periodically (for popup access)
+setInterval(() => {
+  const profile = storageManager.getProfile();
+  const kanban = storageManager.getKanban();
+  
+  chrome.storage.local.set({
+    wem_user_profile: profile,
+    wem_kanban: kanban
+  });
+}, 5000); // Sync every 5 seconds
+
