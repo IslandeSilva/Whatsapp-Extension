@@ -60,20 +60,35 @@ class WhatsAppInjector {
   }
 
   injectSignature(messageElement) {
+    console.log('[WEM] injectSignature called');
+    
     const profile = storageManager.getProfile();
-    if (!profile || !profile.userName) return;
+    console.log('[WEM] Profile loaded:', profile);
+    
+    if (!profile || !profile.userName || profile.userName.trim() === '') {
+      console.log('[WEM] No profile or empty userName, skipping injection');
+      return;
+    }
 
     const currentText = messageElement.textContent || '';
-    if (!currentText.trim()) return;
+    if (!currentText.trim()) {
+      console.log('[WEM] Empty message, skipping injection');
+      return;
+    }
 
     // Get signature format
     const signature = this.formatSignature(profile);
+    console.log('[WEM] Generated signature:', signature);
 
     // Check if signature already exists
-    if (currentText.includes(signature)) return;
+    if (currentText.includes(signature)) {
+      console.log('[WEM] Signature already exists, skipping injection');
+      return;
+    }
 
     // Prepend signature to message (at the beginning)
     const newText = signature + ' ' + currentText;
+    console.log('[WEM] New text to inject:', newText);
     
     // Update the message box
     messageElement.textContent = newText;
@@ -82,6 +97,10 @@ class WhatsAppInjector {
     const inputEvent = new Event('input', { bubbles: true });
     messageElement.dispatchEvent(inputEvent);
     
+    // Also trigger change event for compatibility
+    const changeEvent = new Event('change', { bubbles: true });
+    messageElement.dispatchEvent(changeEvent);
+    
     // Move cursor to the end
     const range = document.createRange();
     const sel = window.getSelection();
@@ -89,11 +108,16 @@ class WhatsAppInjector {
     range.collapse(false);
     sel.removeAllRanges();
     sel.addRange(range);
+    
+    console.log('[WEM] Signature injection complete');
   }
 
   formatSignature(profile) {
     const format = profile.messageFormat || '*{name}:*';
-    return format.replace('{name}', profile.userName);
+    const userName = (profile.userName && profile.userName.trim()) || 'User';
+    const signature = format.replace('{name}', userName);
+    console.log('[WEM] formatSignature - format:', format, 'userName:', userName, 'result:', signature);
+    return signature;
   }
 
   // Add visual indicator to current chat based on kanban status

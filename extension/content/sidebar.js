@@ -296,6 +296,7 @@ class SidebarManager {
       messageFormat: document.getElementById('wem-message-format').value
     };
 
+    console.log('[WEM] Saving profile:', profile);
     storageManager.saveProfile(profile);
     alert('✅ Perfil salvo com sucesso!');
     this.closeModal('wem-profile-modal');

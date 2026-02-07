@@ -28,13 +28,17 @@ class StorageManager {
   // Profile Management
   getProfile() {
     const data = localStorage.getItem(this.KEYS.PROFILE);
-    return data ? JSON.parse(data) : null;
+    const profile = data ? JSON.parse(data) : null;
+    console.log('[WEM Storage] Getting profile from localStorage:', profile);
+    return profile;
   }
 
   saveProfile(profile) {
+    console.log('[WEM Storage] Saving profile to localStorage:', profile);
     localStorage.setItem(this.KEYS.PROFILE, JSON.stringify(profile));
     // Sync to chrome.storage immediately
     this.syncToChromeStorage();
+    console.log('[WEM Storage] Profile saved successfully');
   }
 
   // Kanban Management
