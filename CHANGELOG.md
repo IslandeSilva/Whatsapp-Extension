@@ -2,6 +2,30 @@
 
 All notable changes to the WhatsApp Extension Manager project.
 
+## [1.1.0] - 2024-02-07
+
+### 🎉 Bug Fixes and Improvements
+
+#### Fixed Issues
+- **Sidebar Overlay**: Fixed sidebar overlap issue - now pushes WhatsApp content to the right instead of overlaying it
+- **Message Signature**: Fixed name not appearing in messages - signature now correctly prepends to messages
+- **Auto-detection**: Implemented automatic recognition and addition of new chats to Kanban
+- **Visual Indicators**: Enhanced colored dots to appear reliably in WhatsApp Web chat list
+
+#### Technical Improvements
+- Added `margin-left: 50px` to WhatsApp's #app container to prevent overlap
+- Changed signature injection from append to prepend for better visibility
+- Implemented debounced MutationObserver for efficient auto-detection
+- Improved name matching algorithm for visual indicators (case-insensitive, partial match)
+- Added automatic initialization of chat observation on page load
+- Enhanced chat indicator in conversation header
+
+#### Code Quality
+- Added proper cursor positioning after signature injection
+- Improved error handling in auto-detection logic
+- Added console logging for debugging auto-detection
+- Better fallback for phone number generation when not available
+
 ## [1.0.0] - 2024-02-07
 
 ### 🎉 Complete Refactoring
