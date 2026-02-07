@@ -139,6 +139,30 @@ Contribuições são bem-vindas! Sinta-se à vontade para:
 - Sugerir novas funcionalidades
 - Enviar pull requests
 
+## 🔧 Ferramentas de Diagnóstico
+
+### Diagnostic Tool
+Uma ferramenta HTML standalone para verificar a configuração da extensão:
+- Abre `diagnostic.html` no navegador
+- Verifica se o perfil está configurado corretamente
+- Mostra preview da assinatura que será injetada
+- Identifica problemas comuns (userName vazio, etc.)
+- Permite limpar e reconfigurar dados
+
+### Debugging Guide
+Guia completo de depuração em `DEBUGGING-INJECTION.md`:
+- Passos para debugar problemas de injeção
+- Como verificar logs no console
+- Soluções para problemas comuns
+- Técnicas avançadas de debugging
+
+### Console Logs
+A extensão agora inclui logs detalhados no console do navegador:
+- Pressione F12 no WhatsApp Web
+- Procure por mensagens com prefixo `[WEM]`
+- Acompanhe o fluxo de injeção de assinatura
+- Identifique problemas facilmente
+
 ## 📄 Licença
 
 Este projeto é open source e está disponível sob a licença especificada no arquivo LICENSE.
