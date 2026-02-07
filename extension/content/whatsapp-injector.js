@@ -25,11 +25,16 @@ class WhatsAppInjector {
     if (!messageBox) return;
 
     // Listen for Enter key (send message)
+    // Use capture phase to inject BEFORE WhatsApp processes the send
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
         const activeElement = document.activeElement;
         if (activeElement && activeElement.getAttribute('contenteditable') === 'true') {
-          this.injectSignature(activeElement);
+          // Small delay (10ms) to ensure the Enter key has been processed by the browser
+          // and the message text is fully available in the contenteditable element
+          setTimeout(() => {
+            this.injectSignature(activeElement);
+          }, 10);
         }
       }
     }, true);
@@ -47,9 +52,11 @@ class WhatsAppInjector {
         sendButton.addEventListener('click', () => {
           const messageBox = document.querySelector('[contenteditable="true"][data-tab="10"]');
           if (messageBox) {
+            // Inject signature immediately when button is clicked
+            // But before WhatsApp processes the click
             this.injectSignature(messageBox);
           }
-        });
+        }, true); // Use capture phase to run before WhatsApp's handler
       }
     });
 
@@ -60,40 +67,89 @@ class WhatsAppInjector {
   }
 
   injectSignature(messageElement) {
+    console.log('[WEM] injectSignature called');
+    
     const profile = storageManager.getProfile();
-    if (!profile || !profile.userName) return;
+    console.log('[WEM] Profile loaded:', profile);
+    
+    if (!profile || !profile.userName || profile.userName.trim() === '') {
+      console.log('[WEM] No profile or empty userName, skipping injection');
+      return;
+    }
 
     const currentText = messageElement.textContent || '';
-    if (!currentText.trim()) return;
+    if (!currentText.trim()) {
+      console.log('[WEM] Empty message, skipping injection');
+      return;
+    }
 
     // Get signature format
     const signature = this.formatSignature(profile);
+    console.log('[WEM] Generated signature:', signature);
 
     // Check if signature already exists
-    if (currentText.includes(signature)) return;
+    if (currentText.includes(signature)) {
+      console.log('[WEM] Signature already exists, skipping injection');
+      return;
+    }
 
     // Prepend signature to message (at the beginning)
     const newText = signature + ' ' + currentText;
+    console.log('[WEM] New text to inject:', newText);
     
-    // Update the message box
-    messageElement.textContent = newText;
-
-    // Trigger input event to update WhatsApp's internal state
-    const inputEvent = new Event('input', { bubbles: true });
-    messageElement.dispatchEvent(inputEvent);
-    
-    // Move cursor to the end
-    const range = document.createRange();
-    const sel = window.getSelection();
-    range.selectNodeContents(messageElement);
-    range.collapse(false);
-    sel.removeAllRanges();
-    sel.addRange(range);
-  }
+    // Try multiple methods for better compatibility
+    try {
+      // Method 1: textContent (primary method - works with most contenteditable elements)
+      messageElement.textContent = newText;
+      
+      // Method 2: innerText (fallback for compatibility with some browsers/cases where
+      // textContent might not trigger WhatsApp's change detection)
+      messageElement.innerText = newText;
+      
+      // Focus the element before dispatching events to ensure WhatsApp's event handlers
+      // are active and listening
+      messageElement.focus();
+      
+      // Trigger multiple events to ensure WhatsApp detects the change
+      const inputEvent = new InputEvent('input', { 
+        bubbles: true, 
+        cancelable: true,
+        inputType: 'insertText',
+        data: newText
+      });
+      messageElement.dispatchEvent(inputEvent);
+      
+      const changeEvent = new Event('change', { bubbles: true });
+      messageElement.dispatchEvent(changeEvent);
+      
+      // Also try textInput event
+      const textInputEvent = new Event('textInput', { bubbles: true });
+      messageElement.dispatchEvent(textInputEvent);
+      
+      // Move cursor to the end
+      const range = document.createRange();
+      const sel = window.getSelection();
+      range.selectNodeContents(messageElement);
+      range.collapse(false);
+      sel.removeAllRanges();
+      sel.addRange(range);
+      
+      console.log('[WEM] Signature injection complete');
+    } catch (error) {
+      console.error('[WEM] Error during injection:', error);
+    }
 
   formatSignature(profile) {
     const format = profile.messageFormat || '*{name}:*';
-    return format.replace('{name}', profile.userName);
+    // Fallback to 'User' only if userName is truly missing (null/undefined)
+    // Note: Empty string check is handled in injectSignature() which returns early
+    // This fallback is for defensive programming in case of unexpected undefined values
+    const userName = profile.userName !== undefined && profile.userName !== null 
+      ? profile.userName.trim() || 'User' 
+      : 'User';
+    const signature = format.replace('{name}', userName);
+    console.log('[WEM] formatSignature - format:', format, 'userName:', userName, 'result:', signature);
+    return signature;
   }
 
   // Add visual indicator to current chat based on kanban status
