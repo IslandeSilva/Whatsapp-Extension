@@ -137,19 +137,29 @@
       <h2>🧪 Testar Formatação</h2>
       <p>Digite um nome para testar:</p>
       <input type="text" id="test-name" placeholder="João Silva" style="padding: 10px; width: 300px; border: 1px solid #ddd; border-radius: 4px;">
-      <button onclick="testFormatting()">Testar</button>
+      <button id="test-btn">Testar</button>
       <div id="test-result" style="margin-top: 15px;"></div>
     </div>
 
     <div class="section">
       <h2>🛠️ Ações</h2>
-      <button onclick="reloadData()">🔄 Recarregar Dados</button>
-      <button onclick="clearData()" style="background: #dc3545;">🗑️ Limpar Dados</button>
-      <button onclick="window.location.href='https://web.whatsapp.com'">💬 Abrir WhatsApp Web</button>
+      <button id="reload-btn">🔄 Recarregar Dados</button>
+      <button id="clear-btn" style="background: #dc3545;">🗑️ Limpar Dados</button>
+      <button id="whatsapp-btn">💬 Abrir WhatsApp Web</button>
     </div>
   </div>
 
   <script>
+    // Event handlers
+    function setupEventListeners() {
+      document.getElementById('test-btn').addEventListener('click', testFormatting);
+      document.getElementById('reload-btn').addEventListener('click', reloadData);
+      document.getElementById('clear-btn').addEventListener('click', clearData);
+      document.getElementById('whatsapp-btn').addEventListener('click', () => {
+        window.location.href = 'https://web.whatsapp.com';
+      });
+    }
+  </script>
     function loadProfileData() {
       const statusDiv = document.getElementById('status');
       const profileDiv = document.getElementById('profile-info');
@@ -173,10 +183,13 @@
         // Check for issues
         if (!profile.userName || profile.userName.trim() === '') {
           statusDiv.innerHTML = '<div class="error">❌ PROBLEMA ENCONTRADO: userName está vazio!</div>';
-        } else if (profile.userName.toLowerCase() === 'response' || profile.userName.toLowerCase() === 'resposta') {
-          statusDiv.innerHTML = '<div class="error">❌ PROBLEMA ENCONTRADO: userName está configurado como "' + profile.userName + '"! Este é o problema relatado.</div>';
         } else {
-          statusDiv.innerHTML = '<div class="success">✅ Perfil configurado corretamente!</div>';
+          const lowerUserName = profile.userName.toLowerCase();
+          if (lowerUserName === 'response' || lowerUserName === 'resposta') {
+            statusDiv.innerHTML = '<div class="error">❌ PROBLEMA ENCONTRADO: userName está configurado como "' + profile.userName + '"! Este é o problema relatado.</div>';
+          } else {
+            statusDiv.innerHTML = '<div class="success">✅ Perfil configurado corretamente!</div>';
+          }
         }
 
         // Display profile info
@@ -235,7 +248,10 @@
     }
 
     // Load on page load
-    window.addEventListener('DOMContentLoaded', loadProfileData);
+    window.addEventListener('DOMContentLoaded', () => {
+      setupEventListeners();
+      loadProfileData();
+    });
   </script>
 </body>
 </html>

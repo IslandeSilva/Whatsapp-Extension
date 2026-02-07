@@ -30,7 +30,8 @@ class WhatsAppInjector {
       if (e.key === 'Enter' && !e.shiftKey) {
         const activeElement = document.activeElement;
         if (activeElement && activeElement.getAttribute('contenteditable') === 'true') {
-          // Small delay to ensure text is in the box
+          // Small delay (10ms) to ensure the Enter key has been processed by the browser
+          // and the message text is fully available in the contenteditable element
           setTimeout(() => {
             this.injectSignature(activeElement);
           }, 10);
@@ -98,13 +99,15 @@ class WhatsAppInjector {
     
     // Try multiple methods for better compatibility
     try {
-      // Method 1: Use textContent (current method)
+      // Method 1: textContent (primary method - works with most contenteditable elements)
       messageElement.textContent = newText;
       
-      // Method 2: Also try innerText as fallback
+      // Method 2: innerText (fallback for compatibility with some browsers/cases where
+      // textContent might not trigger WhatsApp's change detection)
       messageElement.innerText = newText;
       
-      // Method 3: Focus the element first
+      // Focus the element before dispatching events to ensure WhatsApp's event handlers
+      // are active and listening
       messageElement.focus();
       
       // Trigger multiple events to ensure WhatsApp detects the change
@@ -138,7 +141,12 @@ class WhatsAppInjector {
 
   formatSignature(profile) {
     const format = profile.messageFormat || '*{name}:*';
-    const userName = (profile.userName && profile.userName.trim()) || 'User';
+    // Fallback to 'User' only if userName is truly missing (null/undefined)
+    // Note: Empty string check is handled in injectSignature() which returns early
+    // This fallback is for defensive programming in case of unexpected undefined values
+    const userName = profile.userName !== undefined && profile.userName !== null 
+      ? profile.userName.trim() || 'User' 
+      : 'User';
     const signature = format.replace('{name}', userName);
     console.log('[WEM] formatSignature - format:', format, 'userName:', userName, 'result:', signature);
     return signature;
