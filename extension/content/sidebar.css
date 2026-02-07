@@ -17,6 +17,11 @@
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Push WhatsApp content to the right */
+body #app {
+  margin-left: 50px !important;
+}
+
 #wem-slim-sidebar button {
   width: 40px;
   height: 40px;
