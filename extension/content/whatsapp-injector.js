@@ -72,8 +72,8 @@ class WhatsAppInjector {
     // Check if signature already exists
     if (currentText.includes(signature)) return;
 
-    // Append signature to message (at the end)
-    const newText = currentText + '\n' + signature;
+    // Prepend signature to message (at the beginning)
+    const newText = signature + ' ' + currentText;
     
     // Update the message box
     messageElement.textContent = newText;
@@ -81,6 +81,14 @@ class WhatsAppInjector {
     // Trigger input event to update WhatsApp's internal state
     const inputEvent = new Event('input', { bubbles: true });
     messageElement.dispatchEvent(inputEvent);
+    
+    // Move cursor to the end
+    const range = document.createRange();
+    const sel = window.getSelection();
+    range.selectNodeContents(messageElement);
+    range.collapse(false);
+    sel.removeAllRanges();
+    sel.addRange(range);
   }
 
   formatSignature(profile) {
@@ -94,15 +102,18 @@ class WhatsAppInjector {
     const activeChat = document.querySelector('[data-testid="conversation-panel-wrapper"]');
     if (!activeChat) return;
 
-    // Extract chat name/phone (simplified)
+    // Extract chat name
     const chatHeader = activeChat.querySelector('header [dir="auto"]');
     if (!chatHeader) return;
 
-    const chatName = chatHeader.textContent;
+    const chatName = chatHeader.textContent.replace(/[🟢🟡🔴✅⏸️]/g, '').trim();
     const kanban = storageManager.getKanban();
 
     // Find matching chat in kanban
-    const matchingChat = Object.values(kanban).find(chat => chat.name === chatName);
+    const matchingChat = Object.values(kanban).find(chat => 
+      chatName.toLowerCase().includes(chat.name.toLowerCase()) || 
+      chat.name.toLowerCase().includes(chatName.toLowerCase())
+    );
     
     if (matchingChat) {
       // Remove old indicator
@@ -112,8 +123,8 @@ class WhatsAppInjector {
       // Add status indicator
       const indicator = document.createElement('span');
       indicator.className = 'wem-chat-status';
-      indicator.textContent = matchingChat.color;
-      indicator.style.cssText = 'margin-left: 8px; font-size: 18px;';
+      indicator.textContent = ' ' + matchingChat.color;
+      indicator.style.cssText = 'margin-left: 6px; font-size: 20px;';
       chatHeader.appendChild(indicator);
     }
   }

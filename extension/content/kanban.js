@@ -226,35 +226,43 @@ class KanbanManager {
       const chatList = document.querySelector('#pane-side');
       if (!chatList) return;
 
+      // First, remove all existing indicators
+      document.querySelectorAll('.wem-status-indicator').forEach(el => el.remove());
+
       Object.entries(kanban).forEach(([phone, chat]) => {
         // Find chat element in WhatsApp
-        // Note: Matching by name is a simplified approach with limitations.
-        // In production, this should use WhatsApp's internal Store/React data
-        // to match by phone number for 100% accuracy.
         const chatElements = document.querySelectorAll('[data-testid="cell-frame-container"]');
         
         chatElements.forEach(el => {
-          // Try to match phone number (simplified - matches by name)
+          // Try to match by name
           const titleElement = el.querySelector('[dir="auto"]');
-          if (titleElement && titleElement.textContent.includes(chat.name)) {
-            // Remove old indicator
-            const oldIndicator = el.querySelector('.wem-status-indicator');
+          if (!titleElement) return;
+          
+          const chatName = titleElement.textContent.replace(/[🟢🟡🔴✅⏸️]/g, '').trim();
+          
+          // Match if names are similar (case insensitive)
+          if (chatName.toLowerCase().includes(chat.name.toLowerCase()) || 
+              chat.name.toLowerCase().includes(chatName.toLowerCase())) {
+            
+            // Remove old indicator if exists
+            const oldIndicator = titleElement.querySelector('.wem-status-indicator');
             if (oldIndicator) oldIndicator.remove();
 
-            // Add status indicator
+            // Add status indicator at the beginning
             const indicator = document.createElement('span');
             indicator.className = 'wem-status-indicator';
-            indicator.textContent = chat.color;
-            indicator.style.cssText = 'margin-right: 8px; font-size: 16px;';
+            indicator.textContent = chat.color + ' ';
+            indicator.style.cssText = 'margin-right: 4px; font-size: 16px;';
             
-            titleElement.prepend(indicator);
+            // Insert at the beginning of the title
+            titleElement.insertBefore(indicator, titleElement.firstChild);
           }
         });
       });
-    }, 500);
+    }, 300); // Increased from 100ms to 300ms for better performance
   }
 
-  // Auto-detect new chats from WhatsApp (simplified version)
+  // Auto-detect new chats from WhatsApp (improved version)
   detectNewChats() {
     const chatElements = document.querySelectorAll('[data-testid="cell-frame-container"]');
     const kanban = this.getKanban();
@@ -263,14 +271,29 @@ class KanbanManager {
       const nameEl = el.querySelector('[dir="auto"]');
       const name = nameEl?.textContent?.replace(/[🟢🟡🔴✅⏸️]/g, '').trim() || 'Desconhecido';
       
-      // Extract phone from element (or use name as fallback)
-      const phone = this.extractPhoneFromElement(el);
+      // Extract phone from element
+      const phone = this.extractPhoneFromElement(el) || this.generatePhoneFromName(name);
       
       // Only add if we have a valid phone and it's not already in kanban
       if (phone && !kanban[phone]) {
-        this.addChat(phone, name);
+        // Get last message if available
+        const lastMsgEl = el.querySelector('[data-testid="last-msg-text"]');
+        const lastMessage = lastMsgEl?.textContent || '';
+        
+        this.addChat(phone, name, lastMessage);
       }
     });
+  }
+
+  // Generate a unique identifier from name (fallback when phone not available)
+  generatePhoneFromName(name) {
+    // Create a hash-like ID from the name with timestamp to ensure uniqueness
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+      const char = name.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+    }
+    return 'chat_' + Math.abs(hash) + '_' + Date.now();
   }
 
   // Extract phone number from chat element (helper - simplified)
@@ -291,16 +314,31 @@ class KanbanManager {
       return;
     }
 
-    const observer = new MutationObserver(() => {
-      this.detectNewChats();
+    // Initial detection
+    this.detectNewChats();
+
+    const observer = new MutationObserver((mutations) => {
+      // Debounce: only check after a short delay to avoid too many calls
+      clearTimeout(this.detectTimeout);
+      this.detectTimeout = setTimeout(() => {
+        this.detectNewChats();
+        this.updateWhatsAppIndicators();
+      }, 500);
     });
 
     observer.observe(chatList, { 
       childList: true, 
       subtree: true 
     });
+    
+    console.log('WEM: Auto-detection started');
   }
 }
 
 // Initialize Kanban Manager (will be used by sidebar.js)
 const kanbanManager = new KanbanManager();
+
+// Start observing for new chats automatically
+setTimeout(() => {
+  kanbanManager.observeWhatsAppChats();
+}, 2000);
