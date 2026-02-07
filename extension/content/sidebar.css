@@ -1,0 +1,434 @@
+/* WhatsApp Extension Manager - Sidebar & Modals CSS */
+
+/* ========== SLIM SIDEBAR ========== */
+#wem-slim-sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 100vh;
+  background: linear-gradient(180deg, #128C7E 0%, #075E54 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+  gap: 15px;
+  z-index: 999999;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#wem-slim-sidebar button {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#wem-slim-sidebar button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+#wem-slim-sidebar button:active {
+  transform: scale(0.95);
+}
+
+/* ========== MODAL BASE ========== */
+.wem-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9999999;
+  backdrop-filter: blur(5px);
+}
+
+.wem-modal.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wem-modal-content {
+  background: white;
+  border-radius: 20px;
+  width: 95%;
+  max-width: 1400px;
+  height: 90vh;
+  padding: 30px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+@keyframes slideIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.wem-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.wem-modal-header h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.wem-close {
+  background: #f0f0f0;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 28px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+}
+
+.wem-close:hover {
+  background: #e0e0e0;
+  transform: rotate(90deg);
+}
+
+/* ========== KANBAN BOARD ========== */
+.wem-kanban-board {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  height: calc(100% - 60px);
+  overflow-x: auto;
+}
+
+.wem-kanban-column {
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 15px;
+  min-width: 250px;
+  display: flex;
+  flex-direction: column;
+}
+
+.wem-column-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #ddd;
+  flex-shrink: 0;
+}
+
+.wem-column-header h3 {
+  margin: 0;
+  font-size: 16px;
+  flex: 1;
+  color: #333;
+}
+
+.wem-status-icon {
+  font-size: 24px;
+}
+
+.wem-count {
+  background: #128C7E;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  min-width: 20px;
+  text-align: center;
+}
+
+.wem-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 200px;
+  padding: 5px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.wem-cards-container.drag-over {
+  background: rgba(18, 140, 126, 0.1);
+  border: 2px dashed #128C7E;
+  border-radius: 8px;
+}
+
+/* ========== KANBAN CARDS ========== */
+.wem-kanban-card {
+  background: white;
+  border-radius: 10px;
+  padding: 15px;
+  cursor: grab;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+  border-left: 4px solid #128C7E;
+}
+
+.wem-kanban-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.wem-kanban-card.dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+
+.wem-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.wem-card-status {
+  font-size: 18px;
+}
+
+.wem-card-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #333;
+}
+
+.wem-card-phone {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.wem-card-message {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wem-card-time {
+  font-size: 11px;
+  color: #999;
+  text-align: right;
+}
+
+/* ========== PROFILE & SETTINGS MODALS ========== */
+.wem-modal-body {
+  padding: 20px 0;
+}
+
+.wem-form-group {
+  margin-bottom: 20px;
+}
+
+.wem-form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.wem-form-group input,
+.wem-form-group select {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+.wem-form-group input:focus,
+.wem-form-group select:focus {
+  outline: none;
+  border-color: #128C7E;
+}
+
+.wem-preview {
+  background: #f5f5f5;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.wem-preview strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #666;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+#wem-preview-text {
+  font-size: 16px;
+  color: #333;
+  font-family: monospace;
+}
+
+/* ========== BUTTONS ========== */
+.wem-btn-primary,
+.wem-btn-secondary,
+.wem-btn-danger {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.wem-btn-primary {
+  background: #128C7E;
+  color: white;
+}
+
+.wem-btn-primary:hover {
+  background: #0d6d5f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(18, 140, 126, 0.3);
+}
+
+.wem-btn-secondary {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.wem-btn-secondary:hover {
+  background: #e0e0e0;
+}
+
+.wem-btn-danger {
+  background: #f44336;
+  color: white;
+}
+
+.wem-btn-danger:hover {
+  background: #d32f2f;
+}
+
+/* ========== SETTINGS SECTIONS ========== */
+.wem-settings-section {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.wem-settings-section:last-child {
+  border-bottom: none;
+}
+
+.wem-settings-section h3 {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.wem-settings-section p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+/* ========== WHATSAPP INDICATOR ========== */
+.wem-status-indicator {
+  display: inline-block;
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1200px) {
+  .wem-kanban-board {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .wem-kanban-board {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .wem-modal-content {
+    width: 98%;
+    padding: 20px;
+  }
+  
+  #wem-slim-sidebar {
+    width: 45px;
+  }
+  
+  #wem-slim-sidebar button {
+    width: 35px;
+    height: 35px;
+  }
+}
+
+@media (max-width: 480px) {
+  .wem-kanban-board {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========== SCROLLBAR STYLING ========== */
+.wem-cards-container::-webkit-scrollbar,
+.wem-kanban-board::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.wem-cards-container::-webkit-scrollbar-track,
+.wem-kanban-board::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 4px;
+}
+
+.wem-cards-container::-webkit-scrollbar-thumb,
+.wem-kanban-board::-webkit-scrollbar-thumb {
+  background: #128C7E;
+  border-radius: 4px;
+}
+
+.wem-cards-container::-webkit-scrollbar-thumb:hover,
+.wem-kanban-board::-webkit-scrollbar-thumb:hover {
+  background: #0d6d5f;
+}
