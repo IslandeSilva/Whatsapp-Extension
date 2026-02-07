@@ -18,8 +18,13 @@ class KanbanManager {
 
   // Save kanban data to storage
   saveKanban(data) {
+    console.log('[WEM Kanban] Saving kanban data:', data);
     storageManager.saveKanban(data);
-    this.updateWhatsAppIndicators();
+    
+    // Update indicators in WhatsApp immediately
+    if (window.whatsappInjector) {
+      whatsappInjector.updateWhatsAppIndicators();
+    }
   }
 
   // Add new chat to kanban
