@@ -17,6 +17,7 @@
       "matches": ["https://web.whatsapp.com/*"],
       "js": [
         "content/storage.js",
+        "content/kanban.js",
         "content/sidebar.js",
         "content/whatsapp-injector.js"
       ],

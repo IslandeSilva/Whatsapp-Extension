@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp Extension Manager</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📋 WhatsApp Manager</h1>
+      <p class="subtitle">Sistema de Gestão de Atendimentos</p>
+    </header>
+
+    <div class="info-section">
+      <div class="info-card">
+        <span class="icon">👤</span>
+        <div class="info-content">
+          <strong>Perfil</strong>
+          <p id="profile-name">Não configurado</p>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <span class="icon">📊</span>
+        <div class="info-content">
+          <strong>Atendimentos</strong>
+          <p id="kanban-count">0 chats</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="open-whatsapp" class="btn btn-primary">
+        💬 Abrir WhatsApp Web
+      </button>
+      <button id="view-kanban" class="btn btn-secondary">
+        📋 Ver Kanban
+      </button>
+    </div>
+
+    <div class="status-legend">
+      <h3>Status dos Atendimentos:</h3>
+      <div class="legend-items">
+        <div class="legend-item">
+          <span class="legend-icon">🟢</span>
+          <span>Novo</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-icon">🟡</span>
+          <span>Em Atendimento</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-icon">🔴</span>
+          <span>Aguardando</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-icon">⏸️</span>
+          <span>Pausado</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-icon">✅</span>
+          <span>Resolvido</span>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>v1.0.0 | Sistema Kanban para WhatsApp</p>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
