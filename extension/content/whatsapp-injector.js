@@ -25,11 +25,15 @@ class WhatsAppInjector {
     if (!messageBox) return;
 
     // Listen for Enter key (send message)
+    // Use capture phase to inject BEFORE WhatsApp processes the send
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
         const activeElement = document.activeElement;
         if (activeElement && activeElement.getAttribute('contenteditable') === 'true') {
-          this.injectSignature(activeElement);
+          // Small delay to ensure text is in the box
+          setTimeout(() => {
+            this.injectSignature(activeElement);
+          }, 10);
         }
       }
     }, true);
@@ -47,9 +51,11 @@ class WhatsAppInjector {
         sendButton.addEventListener('click', () => {
           const messageBox = document.querySelector('[contenteditable="true"][data-tab="10"]');
           if (messageBox) {
+            // Inject signature immediately when button is clicked
+            // But before WhatsApp processes the click
             this.injectSignature(messageBox);
           }
-        });
+        }, true); // Use capture phase to run before WhatsApp's handler
       }
     });
 
