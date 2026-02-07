@@ -90,27 +90,45 @@ class WhatsAppInjector {
     const newText = signature + ' ' + currentText;
     console.log('[WEM] New text to inject:', newText);
     
-    // Update the message box
-    messageElement.textContent = newText;
-
-    // Trigger input event to update WhatsApp's internal state
-    const inputEvent = new Event('input', { bubbles: true });
-    messageElement.dispatchEvent(inputEvent);
-    
-    // Also trigger change event for compatibility
-    const changeEvent = new Event('change', { bubbles: true });
-    messageElement.dispatchEvent(changeEvent);
-    
-    // Move cursor to the end
-    const range = document.createRange();
-    const sel = window.getSelection();
-    range.selectNodeContents(messageElement);
-    range.collapse(false);
-    sel.removeAllRanges();
-    sel.addRange(range);
-    
-    console.log('[WEM] Signature injection complete');
-  }
+    // Try multiple methods for better compatibility
+    try {
+      // Method 1: Use textContent (current method)
+      messageElement.textContent = newText;
+      
+      // Method 2: Also try innerText as fallback
+      messageElement.innerText = newText;
+      
+      // Method 3: Focus the element first
+      messageElement.focus();
+      
+      // Trigger multiple events to ensure WhatsApp detects the change
+      const inputEvent = new InputEvent('input', { 
+        bubbles: true, 
+        cancelable: true,
+        inputType: 'insertText',
+        data: newText
+      });
+      messageElement.dispatchEvent(inputEvent);
+      
+      const changeEvent = new Event('change', { bubbles: true });
+      messageElement.dispatchEvent(changeEvent);
+      
+      // Also try textInput event
+      const textInputEvent = new Event('textInput', { bubbles: true });
+      messageElement.dispatchEvent(textInputEvent);
+      
+      // Move cursor to the end
+      const range = document.createRange();
+      const sel = window.getSelection();
+      range.selectNodeContents(messageElement);
+      range.collapse(false);
+      sel.removeAllRanges();
+      sel.addRange(range);
+      
+      console.log('[WEM] Signature injection complete');
+    } catch (error) {
+      console.error('[WEM] Error during injection:', error);
+    }
 
   formatSignature(profile) {
     const format = profile.messageFormat || '*{name}:*';
