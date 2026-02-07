@@ -69,6 +69,9 @@ class WhatsAppInjector {
   injectSignature(messageElement) {
     console.log('[WEM] injectSignature called');
     
+    // Auto-save current chat to Kanban
+    this.detectAndSaveCurrentChat();
+    
     const profile = storageManager.getProfile();
     console.log('[WEM] Profile loaded:', profile);
     
@@ -199,6 +202,96 @@ class WhatsAppInjector {
       });
     }
   }
+
+  // Detect and save current chat to Kanban
+  detectAndSaveCurrentChat() {
+    const chatHeader = document.querySelector('[data-testid="conversation-panel-wrapper"] header [dir="auto"]');
+    if (!chatHeader) return null;
+    
+    const chatName = chatHeader.textContent.replace(/[🟢🟡🔴✅⏸️]/g, '').trim();
+    const phoneMatch = window.location.href.match(/\/(\d+)$/);
+    const phone = phoneMatch ? phoneMatch[1] : 'unknown_' + Date.now();
+    
+    // Get last message
+    const messages = document.querySelectorAll('[data-testid="msg-container"]');
+    const lastMsg = messages.length > 0 ? messages[messages.length - 1].textContent : '';
+    
+    // Add to Kanban if not already present
+    console.log('[WEM] Detecting chat:', chatName, phone);
+    kanbanManager.addChat(phone, chatName, lastMsg.substring(0, 100));
+    
+    return { phone, chatName };
+  }
+
+  // Update indicators in ALL chats in the list
+  updateWhatsAppIndicators() {
+    const kanban = storageManager.getKanban();
+    
+    // Select all chats in the sidebar
+    const chatElements = document.querySelectorAll('[data-testid="cell-frame-container"]');
+    
+    chatElements.forEach(chatEl => {
+      const nameEl = chatEl.querySelector('[dir="auto"][title]');
+      if (!nameEl) return;
+      
+      const chatName = nameEl.textContent.replace(/[🟢🟡🔴✅⏸️]/g, '').trim();
+      
+      // Find matching chat in Kanban
+      const matchingChat = Object.values(kanban).find(chat => 
+        chatName.toLowerCase().includes(chat.name.toLowerCase()) || 
+        chat.name.toLowerCase().includes(chatName.toLowerCase())
+      );
+      
+      if (matchingChat) {
+        // Remove old indicator
+        const oldIndicator = nameEl.querySelector('.wem-status-indicator');
+        if (oldIndicator) oldIndicator.remove();
+        
+        // Add new indicator at the beginning
+        const indicator = document.createElement('span');
+        indicator.className = 'wem-status-indicator';
+        indicator.textContent = matchingChat.color + ' ';
+        indicator.style.cssText = 'margin-right: 4px;';
+        nameEl.insertBefore(indicator, nameEl.firstChild);
+      }
+    });
+  }
+
+  // Observe chat list for changes
+  observeChatList() {
+    const observer = new MutationObserver(() => {
+      this.updateWhatsAppIndicators();
+    });
+    
+    const chatList = document.querySelector('#pane-side');
+    if (chatList) {
+      observer.observe(chatList, {
+        childList: true,
+        subtree: true
+      });
+      console.log('[WEM] Chat list observer started');
+    }
+  }
+
+  // Observe when user opens a new chat
+  observeNewChats() {
+    const observer = new MutationObserver(() => {
+      const activeChat = document.querySelector('[data-testid="conversation-panel-wrapper"]');
+      if (activeChat) {
+        // Delay to ensure chat loaded
+        setTimeout(() => {
+          this.detectAndSaveCurrentChat();
+          this.updateWhatsAppIndicators();
+        }, 1000);
+      }
+    });
+    
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+    console.log('[WEM] New chats observer started');
+  }
 }
 
 // Initialize WhatsApp Injector
@@ -207,4 +300,11 @@ const whatsappInjector = new WhatsAppInjector();
 // Also start observing for chat changes
 setTimeout(() => {
   whatsappInjector.observeChatChanges();
-}, 2000);
+  whatsappInjector.observeChatList();
+  whatsappInjector.observeNewChats();
+}, 3000);
+
+// Update indicators every 5 seconds
+setInterval(() => {
+  whatsappInjector.updateWhatsAppIndicators();
+}, 5000);
